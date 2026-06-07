@@ -24,11 +24,6 @@ const defaultSettingsByDifficulty: Record<Difficulty, MathSettings> = {
   },
 };
 
-interface GeneratedExpression {
-  expression: string;
-  answer: number;
-}
-
 interface GeneratedOperands {
   left: number;
   right: number;
@@ -39,49 +34,16 @@ interface GeneratedOperands {
 export class ProblemGenerator {
   generate(difficulty: Difficulty, levelSettings?: Partial<MathSettings>): MathProblem {
     const settings = { ...defaultSettingsByDifficulty[difficulty], ...levelSettings };
-    const generated = settings.allowThreeNumbers
-      ? this.generateThreeNumberExpression(settings)
-      : this.generateTwoNumberExpression(difficulty, settings);
-    const options = this.generateOptions(generated.answer, settings.maxNumber);
+    const operands = this.generateOperands(difficulty, settings);
+    const options = this.generateOptions(operands.answer, settings.maxNumber);
 
     return {
       type: "chooseResult",
-      expression: `${generated.expression} = ?`,
-      correctAnswer: generated.answer,
+      expression: `${operands.left} ${operands.operation} ${operands.right} = ?`,
+      correctAnswer: operands.answer,
       options,
       difficulty,
     };
-  }
-
-  private generateTwoNumberExpression(difficulty: Difficulty, settings: MathSettings): GeneratedExpression {
-    const operands = this.generateOperands(difficulty, settings);
-    return {
-      expression: `${operands.left} ${operands.operation} ${operands.right}`,
-      answer: operands.answer,
-    };
-  }
-
-  private generateThreeNumberExpression(settings: MathSettings): GeneratedExpression {
-    const maximumAnswer = Math.min(20, settings.maxNumber);
-
-    for (let attempt = 0; attempt < 100; attempt += 1) {
-      const first = this.randomInt(settings.minNumber, Math.min(12, settings.maxNumber));
-      const second = this.randomInt(settings.minNumber, Math.min(12, settings.maxNumber));
-      const third = this.randomInt(settings.minNumber, Math.min(9, settings.maxNumber));
-      const firstOperation = this.pick(settings.allowedOperations);
-      const secondOperation = this.pick(settings.allowedOperations);
-      const partial = this.applyOperation(first, second, firstOperation);
-      const answer = this.applyOperation(partial, third, secondOperation);
-
-      if (answer >= 0 && answer <= maximumAnswer) {
-        return {
-          expression: `${first} ${firstOperation} ${second} ${secondOperation} ${third}`,
-          answer,
-        };
-      }
-    }
-
-    return { expression: "2 + 3 - 1", answer: 4 };
   }
 
   private generateOperands(difficulty: Difficulty, settings: MathSettings): GeneratedOperands {
@@ -119,14 +81,10 @@ export class ProblemGenerator {
     return { left, right, operation: "-", answer: left - right };
   }
 
-  private applyOperation(left: number, right: number, operation: Operation): number {
-    return operation === "+" ? left + right : left - right;
-  }
-
   private generateOptions(correctAnswer: number, maxNumber: number): number[] {
     const options = new Set<number>([correctAnswer]);
-    const upperBound = Math.max(10, Math.min(20, maxNumber));
-    const candidateOffsets = [-3, -2, -1, 1, 2, 3, 4, -4, 5, -5];
+    const upperBound = Math.max(10, maxNumber);
+    const candidateOffsets = [-3, -2, -1, 1, 2, 3, 4, -4];
 
     while (options.size < 3) {
       const offset = this.pick(candidateOffsets);

@@ -8,9 +8,6 @@ export class Enemy {
   readonly rewardCoins: number;
   readonly spriteKey: string;
   readonly emoji: string;
-  readonly maxHealth: number;
-  readonly isBoss: boolean;
-  readonly damageToCastle: number;
   x: number;
   y: number;
   health: number;
@@ -25,9 +22,6 @@ export class Enemy {
     this.rewardCoins = config.rewardCoins;
     this.spriteKey = config.spriteKey;
     this.emoji = config.emoji;
-    this.maxHealth = config.maxHealth;
-    this.isBoss = config.isBoss ?? false;
-    this.damageToCastle = config.damageToCastle ?? 1;
     this.x = x;
     this.y = y;
     this.health = config.maxHealth;
@@ -54,10 +48,6 @@ export class Enemy {
     if (this.health === 0) {
       this.state = "defeated";
     }
-  }
-
-  setProblem(problem: MathProblem): void {
-    this.currentProblem = problem;
   }
 
   render(): string {

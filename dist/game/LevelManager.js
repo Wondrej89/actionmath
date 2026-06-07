@@ -5,14 +5,10 @@ export class LevelManager {
         return this.activeLevel;
     }
     getWave(waveNumber) {
-        const configuredWave = this.activeLevel.waves[waveNumber - 1];
-        if (configuredWave) {
-            return configuredWave;
-        }
-        return this.createScalingWave(waveNumber);
+        return this.activeLevel.waves[Math.min(waveNumber - 1, this.activeLevel.waves.length - 1)];
     }
     getWaveCount() {
-        return "∞";
+        return this.activeLevel.waves.length;
     }
     getCurrentDifficulty(waveNumber) {
         return this.getWave(waveNumber).difficulty;
@@ -31,42 +27,13 @@ export class LevelManager {
                 ...this.activeLevel.mathSettings,
                 maxNumber: 20,
                 allowCrossTen: true,
-                allowThreeNumbers: waveNumber >= 9,
+                allowThreeNumbers: true,
             };
         }
         return this.activeLevel.mathSettings;
     }
-    getNextEnemyType(spawnIndex, waveNumber) {
-        const wave = this.getWave(waveNumber);
-        const bossEnemyType = wave.bossEnemyType ?? this.activeLevel.bossEnemyType;
-        const isLastEnemyInBossWave = this.isBossWave(waveNumber) && spawnIndex === wave.enemyCount - 1;
-        if (isLastEnemyInBossWave) {
-            return bossEnemyType;
-        }
+    getNextEnemyType(spawnIndex) {
         return this.activeLevel.enemyTypes[spawnIndex % this.activeLevel.enemyTypes.length];
-    }
-    isBossWave(waveNumber) {
-        return waveNumber > 0 && waveNumber % this.activeLevel.bossEveryWaves === 0;
-    }
-    createScalingWave(waveNumber) {
-        const bossEnemyType = this.isBossWave(waveNumber) ? this.activeLevel.bossEnemyType : undefined;
-        return {
-            waveNumber,
-            enemyCount: Math.min(24, 10 + Math.floor(waveNumber * 0.75)),
-            spawnInterval: Math.max(1200, 3600 - waveNumber * 140),
-            enemySpeed: Math.min(90, 32 + waveNumber * 3),
-            difficulty: this.getScalingDifficulty(waveNumber),
-            bossEnemyType,
-        };
-    }
-    getScalingDifficulty(waveNumber) {
-        if (waveNumber <= 2) {
-            return "easy";
-        }
-        if (waveNumber <= 5) {
-            return "medium";
-        }
-        return "hard";
     }
 }
 //# sourceMappingURL=LevelManager.js.map

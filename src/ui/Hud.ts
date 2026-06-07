@@ -5,7 +5,7 @@ interface HudProps {
   coins: number;
   score: number;
   wave: number;
-  waveCount: number | string;
+  waveCount: number;
   difficulty: Difficulty;
 }
 

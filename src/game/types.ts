@@ -28,9 +28,6 @@ export interface EnemyConfig {
   rewardCoins: number;
   spriteKey: string;
   emoji: string;
-  isBoss?: boolean;
-  damageToCastle?: number;
-  problemSettings?: Partial<MathSettings>;
 }
 
 export interface WaveConfig {
@@ -39,7 +36,6 @@ export interface WaveConfig {
   spawnInterval: number;
   enemySpeed: number;
   difficulty: Difficulty;
-  bossEnemyType?: string;
 }
 
 export interface LevelConfig {
@@ -48,8 +44,6 @@ export interface LevelConfig {
   background: string;
   castleSkin: string;
   enemyTypes: string[];
-  bossEnemyType: string;
-  bossEveryWaves: number;
   waveCount: number;
   difficulty: Difficulty;
   spawnInterval: number;

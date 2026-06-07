@@ -5,9 +5,6 @@ export class Enemy {
     rewardCoins;
     spriteKey;
     emoji;
-    maxHealth;
-    isBoss;
-    damageToCastle;
     x;
     y;
     health;
@@ -21,9 +18,6 @@ export class Enemy {
         this.rewardCoins = config.rewardCoins;
         this.spriteKey = config.spriteKey;
         this.emoji = config.emoji;
-        this.maxHealth = config.maxHealth;
-        this.isBoss = config.isBoss ?? false;
-        this.damageToCastle = config.damageToCastle ?? 1;
         this.x = x;
         this.y = y;
         this.health = config.maxHealth;
@@ -46,9 +40,6 @@ export class Enemy {
         if (this.health === 0) {
             this.state = "defeated";
         }
-    }
-    setProblem(problem) {
-        this.currentProblem = problem;
     }
     render() {
         return this.emoji;
