@@ -143,7 +143,6 @@ button {
 .battlefield::before {
   content: "";
   position: absolute;
-  z-index: 0;
   inset: 0;
   background-image:
     radial-gradient(circle, rgb(255 255 255 / 35%) 0 2px, transparent 2px),
@@ -151,19 +150,6 @@ button {
   background-position: 42px 66px, 12px 24px;
   background-size: 140px 110px, 190px 130px;
   opacity: 0.7;
-}
-
-.battlefield::after {
-  content: "";
-  position: absolute;
-  z-index: 0;
-  inset: 0;
-  background-image: var(--meadow-tiles);
-  background-repeat: repeat;
-  background-size: 384px 384px;
-  image-rendering: pixelated;
-  opacity: 0.24;
-  pointer-events: none;
 }
 
 .skyline {
@@ -175,7 +161,6 @@ button {
 
 .path {
   position: absolute;
-  z-index: 1;
   left: 11%;
   right: -5%;
   top: 54%;
@@ -189,74 +174,19 @@ button {
 
 .castle {
   position: absolute;
-  left: 2%;
-  bottom: 10%;
+  left: 3%;
+  bottom: 14%;
   z-index: 2;
-  width: 280px;
-  height: 310px;
+  width: 220px;
+  height: 270px;
   display: grid;
-  align-content: end;
+  align-content: center;
   justify-items: center;
   color: #213a68;
   border: 7px solid #475b73;
   border-radius: 22px 22px 12px 12px;
   background: linear-gradient(90deg, #b4c4c7, #f0e6c8 48%, #91a8b6);
   box-shadow: inset 0 10px #fff8d8, 12px 16px rgb(0 0 0 / 18%);
-}
-
-.asset-wrap {
-  position: relative;
-  display: grid;
-  place-items: center;
-}
-
-.asset-wrap img {
-  display: block;
-  image-rendering: pixelated;
-}
-
-.asset-missing {
-  display: none !important;
-}
-
-.asset-fallback {
-  display: none;
-  position: relative;
-  z-index: 1;
-  font-size: 4rem;
-}
-
-.asset-fallback.visible {
-  display: inline-block;
-}
-
-.castle-sprite {
-  width: min(360px, 28vw);
-  max-width: 380px;
-  filter: drop-shadow(12px 16px 0 rgb(0 0 0 / 18%));
-}
-
-.castle-sprite-wrap {
-  z-index: 1;
-  margin-bottom: 12px;
-}
-
-
-.castle.asset-loaded {
-  width: 360px;
-  height: 340px;
-  border: 0;
-  background: transparent;
-  box-shadow: none;
-}
-
-.castle.asset-loaded::before,
-.castle.asset-loaded::after {
-  display: none;
-}
-
-.castle.asset-loaded .castle-label {
-  margin-top: -26px;
 }
 
 .castle::before,
@@ -281,6 +211,11 @@ button {
   color: #196cca;
 }
 
+.castle-towers {
+  z-index: 1;
+  font-size: 7rem;
+}
+
 .castle-label {
   z-index: 1;
   padding: 8px 18px;
@@ -295,8 +230,8 @@ button {
   left: 27%;
   bottom: 31%;
   z-index: 3;
-  width: 112px;
-  height: 112px;
+  width: 96px;
+  height: 96px;
   display: grid;
   place-items: center;
   border: 6px solid #316c95;
@@ -304,34 +239,6 @@ button {
   background: linear-gradient(180deg, #b6e4ff, #5798d0);
   font-size: 3rem;
 }
-
-
-.defense-tower.asset-loaded {
-  border-color: transparent;
-  background: transparent;
-}
-
-.tower-sprite {
-  width: 160px;
-  max-width: none;
-  transform: translateY(-22px);
-  filter: drop-shadow(8px 10px 0 rgb(0 0 0 / 16%));
-}
-
-.terrain-decor {
-  position: absolute;
-  z-index: 1;
-  image-rendering: pixelated;
-  filter: drop-shadow(5px 8px 0 rgb(0 0 0 / 15%));
-}
-
-.tree { width: 90px; }
-.tree-left { left: 38%; top: 8%; }
-.tree-right { right: 8%; top: 12%; }
-.rock { width: 54px; }
-.rock-left { left: 47%; bottom: 22%; }
-.bush { width: 68px; }
-.bush-right { right: 19%; bottom: 27%; }
 
 .future-upgrades {
   position: absolute;
@@ -378,19 +285,10 @@ button {
   background: rgb(47 39 31 / 28%);
 }
 
-.enemy-sprite-wrap {
+.enemy-emoji {
   position: relative;
-  animation: bob 0.8s ease-in-out infinite alternate;
-}
-
-.enemy-sprite {
-  width: 112px;
-  max-width: none;
-  filter: drop-shadow(0 5px 0 rgb(0 0 0 / 18%));
-}
-
-.enemy .asset-fallback {
   font-size: 4.8rem;
+  animation: bob 0.8s ease-in-out infinite alternate;
 }
 
 .global-problem {

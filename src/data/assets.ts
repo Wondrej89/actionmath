@@ -1,4 +1,4 @@
-export const assetBasePath = "assets";
+export const assetBasePath = "/assets";
 
 export const assetMap = {
   castle_blue: `${assetBasePath}/Buildings/Blue%20Buildings/Castle.png`,
