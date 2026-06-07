@@ -38,16 +38,12 @@ npm run build
 - `src/game/Economy.ts` and `src/game/UpgradeSystem.ts` are ready for a future shop and upgrade effects.
 - `src/ui/*` contains HUD, answer panel, start screen, and game-over screen components.
 - `src/data/*` contains configurable levels, enemies, and upgrades.
-- `src/data/assets.ts` maps game-facing asset keys to the future root `/assets/...` Tiny Swords folder, while DOM rendering keeps emoji/CSS fallbacks if a file is not present yet.
-
-## Tiny Swords asset folder
-
-When the free Tiny Swords pack is added, rename `Tiny Swords (Free Pack)` to `assets` and place it at the repository root. The current MVP already references the provided structure through `src/data/assets.ts` and falls back to emoji/CSS placeholders whenever a PNG has not been copied in yet.
+- `src/assets/placeholder/assetMap.ts` is the swap point for replacing emoji/CSS placeholders with a real asset pack such as Tiny Swords.
 
 ## Future extension points
 
 - **Animations:** extend `Enemy.update`, `Enemy.render`, and the feedback hooks in `Game.handleAnswer` / `Game.handleEnemyReachedCastle`.
-- **Asset pack:** copy the renamed Tiny Swords folder to root `assets/`; existing keys already point to paths such as `assets/Buildings/Blue Buildings/Castle.png`, `assets/Units/Red Units/Warrior/Warrior_Run.png`, terrain decorations, and UI elements. Add more entries in `src/data/assets.ts` as new sprites are needed.
+- **Asset pack:** replace placeholder CSS/emoji with sprite lookups through `assetMap` and enemy/castle `spriteKey` values.
 - **New problem types:** add generators for `chooseOperator`, `missingNumber`, and `buildExpression` while preserving the `MathProblem` interface.
 - **New maps:** add `LevelConfig` entries in `src/data/levels.ts` with backgrounds, castle skins, enemy pools, waves, and math settings.
 - **Upgrade shop:** connect `UpgradeSystem.purchase` to a future shop UI and spend coins through `Economy`.

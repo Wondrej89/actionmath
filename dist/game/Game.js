@@ -1,4 +1,3 @@
-import { getAssetPath } from "../data/assets.js";
 import { getEnemyConfig } from "../data/enemies.js";
 import { AnswerPanel } from "../ui/AnswerPanel.js";
 import { GameOverScreen } from "../ui/GameOverScreen.js";
@@ -28,8 +27,6 @@ export class Game {
     shell = document.createElement("main");
     scene = document.createElement("section");
     battlefield = document.createElement("div");
-    castleNode = document.createElement("div");
-    defenseTowerNode = document.createElement("div");
     enemyLayer = document.createElement("div");
     activeProblem = document.createElement("div");
     waveBanner = document.createElement("div");
@@ -37,8 +34,6 @@ export class Game {
     answerPanel = new AnswerPanel((answer) => this.handleAnswer(answer));
     startScreen = new StartScreen(() => this.startGame());
     gameOverScreen = new GameOverScreen(() => this.startGame());
-    renderedStaticAssetKey = "";
-    enemyNodes = new Map();
     constructor(root) {
         this.root = root;
     }
@@ -51,18 +46,16 @@ export class Game {
         this.waveBanner.className = "wave-banner hidden";
         this.battlefield.innerHTML = `
       <div class="skyline"></div>
+      <div class="castle" aria-label="Castle placeholder">
+        <div class="castle-flag">⚑</div>
+        <div class="castle-towers">🏰</div>
+        <div class="castle-label">Castle</div>
+      </div>
+      <div class="defense-tower">🧙‍♂️</div>
       <div class="path"></div>
-      <img class="terrain-decor tree tree-left" data-asset-key="tree_1" alt="" />
-      <img class="terrain-decor tree tree-right" data-asset-key="tree_2" alt="" />
-      <img class="terrain-decor rock rock-left" data-asset-key="rock_1" alt="" />
-      <img class="terrain-decor bush bush-right" data-asset-key="bush_1" alt="" />
       <div class="future-upgrades">Upgrades<br><span>shop later</span></div>
     `;
-        this.castleNode.className = "castle";
-        this.castleNode.setAttribute("aria-label", "Castle");
-        this.defenseTowerNode.className = "defense-tower";
-        this.defenseTowerNode.setAttribute("aria-label", "Defense tower");
-        this.battlefield.append(this.castleNode, this.defenseTowerNode, this.enemyLayer, this.activeProblem, this.waveBanner);
+        this.battlefield.append(this.enemyLayer, this.activeProblem, this.waveBanner);
         this.scene.append(this.hud.element, this.battlefield, this.answerPanel.element);
         this.shell.append(this.startScreen.element, this.scene, this.gameOverScreen.element);
         this.root.replaceChildren(this.shell);
@@ -219,80 +212,20 @@ export class Game {
         });
         this.scene.dataset.level = level.id;
         this.battlefield.style.setProperty("--game-width", String(GAME_WIDTH));
-        this.battlefield.style.setProperty("--meadow-tiles", `url("${getAssetPath(level.background) ?? ""}")`);
-        this.renderStaticAssets();
         this.renderEnemies();
         this.renderProblemBubble();
         this.answerPanel.update(this.state.activeProblem);
     }
-    renderStaticAssets() {
-        const level = this.levelManager.getLevel();
-        const assetKey = `${level.id}|${level.castleSkin}|${level.background}`;
-        if (assetKey === this.renderedStaticAssetKey) {
-            return;
-        }
-        this.renderedStaticAssetKey = assetKey;
-        this.castleNode.replaceChildren(this.createAssetImage(level.castleSkin, "castle-sprite", "Blue castle", "🏰"), this.createTextNode("div", "castle-flag", "⚑"), this.createTextNode("div", "castle-label", "Castle"));
-        this.defenseTowerNode.replaceChildren(this.createAssetImage("tower_blue", "tower-sprite", "Blue defense tower", "🧙‍♂️"));
-        this.battlefield.querySelectorAll("[data-asset-key]").forEach((image) => {
-            const assetKey = image.dataset.assetKey;
-            const assetPath = assetKey ? getAssetPath(assetKey) : undefined;
-            if (assetPath && image.src !== assetPath) {
-                image.src = assetPath;
-            }
-            image.onerror = () => image.classList.add("asset-missing");
-        });
-    }
-    createAssetImage(assetKey, className, alt, fallbackText) {
-        const assetPath = getAssetPath(assetKey);
-        const wrapper = document.createElement("span");
-        wrapper.className = `${className}-wrap asset-wrap`;
-        const fallback = document.createElement("span");
-        fallback.className = "asset-fallback";
-        fallback.textContent = fallbackText;
-        if (!assetPath) {
-            fallback.classList.add("visible");
-            wrapper.append(fallback);
-            return wrapper;
-        }
-        const image = document.createElement("img");
-        image.className = className;
-        image.src = assetPath;
-        image.alt = alt;
-        image.draggable = false;
-        image.onerror = () => {
-            image.classList.add("asset-missing");
-            fallback.classList.add("visible");
-        };
-        wrapper.append(image, fallback);
-        return wrapper;
-    }
-    createTextNode(tagName, className, text) {
-        const node = document.createElement(tagName);
-        node.className = className;
-        node.textContent = text;
-        return node;
-    }
     renderEnemies() {
-        const activeEnemyIds = new Set(this.state.enemies.map((enemy) => enemy.id));
-        for (const [enemyId, node] of this.enemyNodes) {
-            if (!activeEnemyIds.has(enemyId)) {
-                node.remove();
-                this.enemyNodes.delete(enemyId);
-            }
-        }
+        this.enemyLayer.innerHTML = "";
         for (const enemy of this.state.enemies) {
-            let node = this.enemyNodes.get(enemy.id);
-            if (!node) {
-                node = document.createElement("div");
-                node.dataset.spriteKey = enemy.spriteKey;
-                node.append(this.createTextNode("span", "enemy-shadow", ""), this.createAssetImage(enemy.spriteKey, "enemy-sprite", enemy.configId, enemy.render()));
-                this.enemyLayer.append(node);
-                this.enemyNodes.set(enemy.id, node);
-            }
+            const node = document.createElement("div");
             node.className = `enemy ${this.state.feedback ?? ""}`;
             node.style.left = `${enemy.x / 10}%`;
             node.style.top = `${enemy.y}px`;
+            node.dataset.spriteKey = enemy.spriteKey;
+            node.innerHTML = `<span class="enemy-shadow"></span><span class="enemy-emoji">${enemy.render()}</span>`;
+            this.enemyLayer.append(node);
         }
     }
     renderProblemBubble() {
