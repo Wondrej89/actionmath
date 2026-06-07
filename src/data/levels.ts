@@ -3,8 +3,8 @@ import type { LevelConfig } from "../game/types.js";
 export const meadowLevel: LevelConfig = {
   id: "green_meadow_castle",
   name: "Green Meadow Before the Castle",
-  background: "terrain_tiles_meadow",
-  castleSkin: "castle_blue",
+  background: "meadow_placeholder",
+  castleSkin: "castle_default",
   enemyTypes: ["slime_green", "goblin_small"],
   waveCount: 4,
   difficulty: "easy",
