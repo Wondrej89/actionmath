@@ -1,0 +1,1 @@
+{"version":3,"file":"assetMap.js","sourceRoot":"","sources":["../../../src/assets/placeholder/assetMap.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,MAAM,QAAQ,GAA2B;IAC9C,cAAc,EAAE,oBAAoB;IACpC,WAAW,EAAE,yBAAyB;IACtC,YAAY,EAAE,0BAA0B;IACxC,kBAAkB,EAAE,oBAAoB;CACzC,CAAC;AAEF,MAAM,UAAU,YAAY,CAAC,SAAiB;IAC5C,OAAO,QAAQ,CAAC,SAAS,CAAC,CAAC;AAC7B,CAAC"}
