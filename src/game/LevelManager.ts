@@ -1,0 +1,90 @@
+import { levels } from "../data/levels.js";
+import type { Difficulty, LevelConfig, MathSettings, WaveConfig } from "./types.js";
+
+export class LevelManager {
+  private activeLevel: LevelConfig = levels[0];
+
+  getLevel(): LevelConfig {
+    return this.activeLevel;
+  }
+
+  getWave(waveNumber: number): WaveConfig {
+    const configuredWave = this.activeLevel.waves[waveNumber - 1];
+    if (configuredWave) {
+      return configuredWave;
+    }
+
+    return this.createScalingWave(waveNumber);
+  }
+
+  getWaveCount(): string {
+    return "∞";
+  }
+
+  getCurrentDifficulty(waveNumber: number): Difficulty {
+    return this.getWave(waveNumber).difficulty;
+  }
+
+  getMathSettings(waveNumber: number): MathSettings {
+    const difficulty = this.getCurrentDifficulty(waveNumber);
+
+    if (difficulty === "medium") {
+      return {
+        ...this.activeLevel.mathSettings,
+        maxNumber: 20,
+        allowCrossTen: true,
+      };
+    }
+
+    if (difficulty === "hard") {
+      return {
+        ...this.activeLevel.mathSettings,
+        maxNumber: 20,
+        allowCrossTen: true,
+        allowThreeNumbers: waveNumber >= 9,
+      };
+    }
+
+    return this.activeLevel.mathSettings;
+  }
+
+  getNextEnemyType(spawnIndex: number, waveNumber: number): string {
+    const wave = this.getWave(waveNumber);
+    const bossEnemyType = wave.bossEnemyType ?? this.activeLevel.bossEnemyType;
+    const isLastEnemyInBossWave = this.isBossWave(waveNumber) && spawnIndex === wave.enemyCount - 1;
+
+    if (isLastEnemyInBossWave) {
+      return bossEnemyType;
+    }
+
+    return this.activeLevel.enemyTypes[spawnIndex % this.activeLevel.enemyTypes.length];
+  }
+
+  isBossWave(waveNumber: number): boolean {
+    return waveNumber > 0 && waveNumber % this.activeLevel.bossEveryWaves === 0;
+  }
+
+  private createScalingWave(waveNumber: number): WaveConfig {
+    const bossEnemyType = this.isBossWave(waveNumber) ? this.activeLevel.bossEnemyType : undefined;
+    return {
+      waveNumber,
+      enemyCount: Math.min(24, 10 + Math.floor(waveNumber * 0.75)),
+      spawnInterval: Math.max(1200, 3600 - waveNumber * 140),
+      enemySpeed: Math.min(90, 32 + waveNumber * 3),
+      difficulty: this.getScalingDifficulty(waveNumber),
+      bossEnemyType,
+    };
+  }
+
+  private getScalingDifficulty(waveNumber: number): Difficulty {
+    if (waveNumber <= 2) {
+      return "easy";
+    }
+
+    if (waveNumber <= 5) {
+      return "medium";
+    }
+
+    return "hard";
+  }
+}
