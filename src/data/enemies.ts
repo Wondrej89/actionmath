@@ -7,8 +7,8 @@ export const enemyConfigs: EnemyConfig[] = [
     maxHealth: 1,
     speed: 24,
     rewardCoins: 10,
-    spriteKey: "enemy_purple_pawn_run",
-    emoji: "🟣",
+    spriteKey: "enemy_slime",
+    emoji: "🟢",
   },
   {
     id: "goblin_small",
@@ -16,8 +16,8 @@ export const enemyConfigs: EnemyConfig[] = [
     maxHealth: 1,
     speed: 28,
     rewardCoins: 12,
-    spriteKey: "enemy_red_warrior_run",
-    emoji: "⚔️",
+    spriteKey: "enemy_goblin",
+    emoji: "👾",
   },
 ];
 
