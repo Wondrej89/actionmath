@@ -1,0 +1,53 @@
+# Math Castle Defense
+
+A browser MVP of a kid-friendly castle defense math game for grades 1–3. The player protects a castle by choosing the correct answer to addition and subtraction problems while enemies walk from the right side of the battlefield toward the castle.
+
+## Run locally
+
+```bash
+npm run dev
+```
+
+Then open http://127.0.0.1:5173 in the browser. The repository includes compiled `dist/` files so the MVP can run as a static app.
+
+After changing TypeScript, rebuild with:
+
+```bash
+npm run build
+```
+
+## Current MVP
+
+- Menu with **Start Game**.
+- Castle health, coins, score, wave, and difficulty HUD.
+- One active enemy moving from right to left toward the castle.
+- Choose-result math problems with three touch-friendly answer buttons.
+- Easy and medium addition/subtraction up to 20.
+- Correct answer defeats the enemy and awards coins/score.
+- Wrong answer flashes red and nudges the enemy closer.
+- Enemy reaching the castle removes one heart.
+- Game Over screen with score, coins, and Play Again.
+
+## Architecture overview
+
+- `src/game/Game.ts` wires the game state, loop, DOM scene, enemy spawning, scoring, wave progression, and game-over flow.
+- `src/game/GameLoop.ts` provides a small `requestAnimationFrame` loop for future animation expansion.
+- `src/game/Enemy.ts` and `src/game/Castle.ts` model game actors with update/render-oriented methods.
+- `src/game/ProblemGenerator.ts` owns age-appropriate math problem generation and answer option validation.
+- `src/game/LevelManager.ts` reads level and wave configuration from data files.
+- `src/game/Economy.ts` and `src/game/UpgradeSystem.ts` are ready for a future shop and upgrade effects.
+- `src/ui/*` contains HUD, answer panel, start screen, and game-over screen components.
+- `src/data/*` contains configurable levels, enemies, and upgrades.
+- `src/data/assets.ts` maps game-facing asset keys to the future root `/assets/...` Tiny Swords folder, while DOM rendering keeps emoji/CSS fallbacks if a file is not present yet.
+
+## Tiny Swords asset folder
+
+When the free Tiny Swords pack is added, rename `Tiny Swords (Free Pack)` to `assets` and place it at the repository root. The current MVP already references the provided structure through `src/data/assets.ts` and falls back to emoji/CSS placeholders whenever a PNG has not been copied in yet.
+
+## Future extension points
+
+- **Animations:** extend `Enemy.update`, `Enemy.render`, and the feedback hooks in `Game.handleAnswer` / `Game.handleEnemyReachedCastle`.
+- **Asset pack:** copy the renamed Tiny Swords folder to root `assets/`; existing keys already point to paths such as `assets/Buildings/Blue Buildings/Castle.png`, `assets/Units/Red Units/Warrior/Warrior_Run.png`, terrain decorations, and UI elements. Add more entries in `src/data/assets.ts` as new sprites are needed.
+- **New problem types:** add generators for `chooseOperator`, `missingNumber`, and `buildExpression` while preserving the `MathProblem` interface.
+- **New maps:** add `LevelConfig` entries in `src/data/levels.ts` with backgrounds, castle skins, enemy pools, waves, and math settings.
+- **Upgrade shop:** connect `UpgradeSystem.purchase` to a future shop UI and spend coins through `Economy`.
