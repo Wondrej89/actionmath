@@ -1,4 +1,5 @@
 import { getEnemyConfig } from "../data/enemies.js";
+import { getAssetPath } from "../assets/placeholder/assetMap.js";
 import { AnswerPanel } from "../ui/AnswerPanel.js";
 import { GameOverScreen } from "../ui/GameOverScreen.js";
 import { Hud } from "../ui/Hud.js";
@@ -48,12 +49,19 @@ export class Game {
     this.activeProblem.className = "global-problem";
     this.waveBanner.className = "wave-banner hidden";
 
+    const castleAssetPath = getAssetPath("castle_default");
     this.battlefield.innerHTML = `
       <div class="skyline"></div>
-      <div class="castle" aria-label="Castle placeholder">
-        <div class="castle-flag">⚑</div>
-        <div class="castle-towers">🏰</div>
-        <div class="castle-label">Castle</div>
+      <div class="castle ${castleAssetPath ? "castle--sprite" : ""}" aria-label="Castle">
+        ${
+          castleAssetPath
+            ? `<img class="castle-sprite" src="${castleAssetPath}" alt="Castle" />`
+            : `
+              <div class="castle-flag">⚑</div>
+              <div class="castle-towers">🏰</div>
+              <div class="castle-label">Castle</div>
+            `
+        }
       </div>
       <div class="defense-tower">🧙‍♂️</div>
       <div class="path"></div>
@@ -259,7 +267,13 @@ export class Game {
       node.style.left = `${enemy.x / 10}%`;
       node.style.top = `${enemy.y}px`;
       node.dataset.spriteKey = enemy.spriteKey;
-      node.innerHTML = `<span class="enemy-shadow"></span><span class="enemy-emoji">${enemy.render()}</span>`;
+      const assetPath = getAssetPath(enemy.spriteKey);
+      node.innerHTML = assetPath
+        ? `
+          <span class="enemy-shadow"></span>
+          <img class="enemy-sprite" src="${assetPath}" alt="${enemy.configId}" />
+        `
+        : `<span class="enemy-shadow"></span><span class="enemy-emoji">${enemy.render()}</span>`;
       this.enemyLayer.append(node);
     }
   }
